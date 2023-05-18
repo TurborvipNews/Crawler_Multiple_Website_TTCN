@@ -21,14 +21,6 @@ public class CrawlerNewsTask {
     @Autowired
     CategoryService categoryService;
 
-    // 600000 = 10 minute
-//    @Scheduled(fixedRate = 600000)
-//    public static void crawlerNews() throws IOException {
-//        System.out.println("Crawling news ..... ");
-//        NewsController newsController = new NewsController();
-//        newsController.testSave();
-//    }
-
     @Scheduled(fixedRate = 600000)
     public  void crawlerNews() throws IOException {
         System.out.println("Crawling news ..... ");

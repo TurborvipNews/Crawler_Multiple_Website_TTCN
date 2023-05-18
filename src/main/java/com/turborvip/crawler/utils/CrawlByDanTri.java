@@ -29,7 +29,6 @@ public class CrawlByDanTri implements CrawlStrategy {
 
     @Override
     public ArrayList<News> getDataListNews(String path) throws IOException {
-        // TODO Auto-generate method stub
         try {
             ArrayList<News> listNews = new ArrayList<>();
             Document doc = Jsoup.connect(path).timeout(5000).get();
