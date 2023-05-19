@@ -2,6 +2,8 @@ package com.turborvip.crawler.controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.turborvip.crawler.models.Category;
+import com.turborvip.crawler.models.News;
 import com.turborvip.crawler.models.Url;
 import com.turborvip.crawler.repositories.CategoryRepository;
 import com.turborvip.crawler.services.CategoryService;
@@ -24,37 +26,37 @@ public class NewsController {
 
     @GetMapping("/test/save/news")
     public void testSave() throws IOException {
-//        News news = new News();
-//        news.setCaption("test thoi kk");
-//        Category category = new Category();
-//        category.setId(1L);
-//
-//        Category category1 = new Category();
-//        category1.setId(2L);
-//
-//        System.out.println(news);
-//
-//        Set<Category> categories = new HashSet<>();
-//        categories.add(category);
-//        categories.add(category1);
-//
-//        news.setLikedNews(categories);
+        News news = new News();
+        news.setCaption("test thoi kk");
+        Category category = new Category();
+        category.setId(1L);
 
-//        this.newsService.save(news);
+        Category category1 = new Category();
+        category1.setId(2L);
 
-        List<CategoryRepository.FieldNecessaryOfCategory> categories = categoryService.getAll();
+        System.out.println(news);
 
-        Iterator<CategoryRepository.FieldNecessaryOfCategory> iterator = categories.iterator();
-        while (iterator.hasNext()){
-            CategoryRepository.FieldNecessaryOfCategory element = iterator.next();
-            ArrayList<Url> urlList = element.getUrl();
-            if (urlList != null && !urlList.isEmpty()){
-                for (Url url: urlList) {
-                    System.out.println(url.getType());
-                }
-            }
-            System.out.println("-------------------------");
-        }
+        Set<Category> categories = new HashSet<>();
+        categories.add(category);
+        categories.add(category1);
+
+        news.setLikedNews(categories);
+
+        this.newsService.save(news);
+
+//        List<CategoryRepository.FieldNecessaryOfCategory> categories = categoryService.getAll();
+//
+//        Iterator<CategoryRepository.FieldNecessaryOfCategory> iterator = categories.iterator();
+//        while (iterator.hasNext()){
+//            CategoryRepository.FieldNecessaryOfCategory element = iterator.next();
+//            ArrayList<Url> urlList = element.getUrl();
+//            if (urlList != null && !urlList.isEmpty()){
+//                for (Url url: urlList) {
+//                    System.out.println(url.getType());
+//                }
+//            }
+//            System.out.println("-------------------------");
+//        }
 
 
     }

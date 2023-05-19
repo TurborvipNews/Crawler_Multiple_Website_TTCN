@@ -15,11 +15,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
 public class CrawlByDanTri implements CrawlStrategy {
 
-    @Autowired
-    NewsService newsService;
+    private NewsService newsService;
 
     private String path;
 
@@ -31,6 +29,7 @@ public class CrawlByDanTri implements CrawlStrategy {
     public ArrayList<News> getDataListNews(String path) throws IOException {
         try {
             ArrayList<News> listNews = new ArrayList<>();
+            assert path != null;
             Document doc = Jsoup.connect(path).timeout(5000).get();
             Element component = doc.getElementsByClass("article list").first();
 
@@ -93,40 +92,41 @@ public class CrawlByDanTri implements CrawlStrategy {
 
     @Override
     public void saveNewsInDB() throws IOException {
-//        ArrayList<News> listNews = this.getDataListNews(path);
-//        for (News news : listNews) {
-//            // create category current
-//            Category category = new Category();
-//            category.setId(this.categoryId);
-//            Set<Category> categories = new HashSet<>();
-//            categories.add(category);
-//            // create reference with category
-//            news.setLikedNews(categories);
-//            // create record in database
-//            this.newsService.save(news);
-//        }
+        ArrayList<News> listNews = this.getDataListNews(path);
+        for (News news : listNews) {
+            // create category current
+            Category category = new Category();
+            category.setId(this.categoryId);
+            Set<Category> categories = new HashSet<>();
+            categories.add(category);
+            // create reference with category
+            news.setLikedNews(categories);
+            // create record in database
+            this.newsService.save(news);
+        }
 
-        News news = new News();
-        news.setCaption("test thoi kk");
-        Category category = new Category();
-        category.setId(1L);
-
-        Category category1 = new Category();
-        category1.setId(2L);
-
-        System.out.println(news);
-
-        Set<Category> categories = new HashSet<>();
-        categories.add(category);
-        categories.add(category1);
-
-        news.setLikedNews(categories);
-
-        this.newsService.save(news);
-
+//        News news = new News();
+//        news.setCaption("test thoi kk");
+//        Category category = new Category();
+//        category.setId(1L);
+//
+//        Category category1 = new Category();
+//        category1.setId(2L);
+//
+//        System.out.println(news);
+//
+//        Set<Category> categories = new HashSet<>();
+//        categories.add(category);
+//        categories.add(category1);
+//
+//        news.setLikedNews(categories);
+//
+//        this.newsService.save(news);
     }
 
-    public CrawlByDanTri(String path, Long categoryId) {
+    @Autowired
+    public CrawlByDanTri(NewsService newsService,String path, Long categoryId) {
+        this.newsService = newsService;
         this.path = path;
         this.categoryId = categoryId;
     }

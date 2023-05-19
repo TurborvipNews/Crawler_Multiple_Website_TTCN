@@ -6,7 +6,7 @@ import com.turborvip.crawler.services.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("newsService")
 public class NewsServiceImpl implements NewsService {
     @Autowired
     private NewsRepository newsRepository;

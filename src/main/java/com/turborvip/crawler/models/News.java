@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "news")
 public class News {
@@ -16,6 +17,7 @@ public class News {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(unique = true)
     private String caption;
     private String thumbnail;
 
@@ -29,18 +31,16 @@ public class News {
 
     private Long view_of_hour = 0L;
 
+    @Column(unique = true)
     private String url;
 
     private boolean status = true;
-
-    private Long categoryId;
 
     private Date created_at = TIME_NOW;
     private Date updated_at = TIME_NOW;
     private Date published_at = TIME_NOW;
     private String created_by_id;
     private String updated_by_id;
-
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "news_categories_links",
@@ -150,14 +150,6 @@ public class News {
 
     public Set<Category> getLikedNews() {
         return likedNews;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long category_id) {
-        this.categoryId = category_id;
     }
 
     public void setLikedNews(Set<Category> likedNews) {

@@ -3,6 +3,7 @@ package com.turborvip.crawler.scheduler;
 import com.turborvip.crawler.models.Url;
 import com.turborvip.crawler.repositories.CategoryRepository;
 import com.turborvip.crawler.services.CategoryService;
+import com.turborvip.crawler.services.NewsService;
 import com.turborvip.crawler.utils.CrawlByDanTri;
 import com.turborvip.crawler.utils.CrawlStrategy;
 import com.turborvip.crawler.utils.Crawler;
@@ -19,6 +20,8 @@ public class CrawlerNewsTask {
     CrawlStrategy strategy;
 
     @Autowired
+    NewsService newsService;
+    @Autowired
     CategoryService categoryService;
 
     @Scheduled(fixedRate = 600000)
@@ -34,8 +37,8 @@ public class CrawlerNewsTask {
                     Crawler crawler = new Crawler();
 
                     if(url.getType().equals("dan_tri")){
-                        System.out.println("crawl dan tri strategy");
-                        strategy = new CrawlByDanTri(url.getPath(),category.getId());
+                        System.out.println("crawl dan tri strategy " + url.getPath());
+                        strategy = new CrawlByDanTri(this.newsService,url.getPath(),category.getId());
                     }
                     assert strategy != null;
                     crawler.processCrawl(strategy);
