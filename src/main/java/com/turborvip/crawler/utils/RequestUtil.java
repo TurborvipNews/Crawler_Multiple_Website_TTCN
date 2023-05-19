@@ -16,7 +16,7 @@ import org.apache.hc.core5.http.message.BasicHeader;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Request {
+public class RequestUtil {
     private static CloseableHttpClient httpClient;
     private static String baseUrl = "http://localhost:1337/";
 
@@ -24,9 +24,9 @@ public class Request {
             new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"),
     };
 
-    public Request(String baseUrl) {
+    public RequestUtil(String baseUrl) {
         httpClient = HttpClientBuilder.create().setDefaultHeaders(Arrays.asList(headers)).build();
-        Request.baseUrl = baseUrl;
+        RequestUtil.baseUrl = baseUrl;
     }
 
     public String get(String path, String... basicToken) throws IOException, ParseException {

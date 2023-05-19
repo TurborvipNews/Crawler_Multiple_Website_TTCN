@@ -29,7 +29,6 @@ import java.util.Properties;
 })
 @EnableJpaRepositories(basePackages = "com.turborvip.crawler.repositories")
 public class Persistence {
-
     @Autowired
     private Environment env;
 
@@ -56,20 +55,27 @@ public class Persistence {
         final Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
         hibernateProperties.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+
+//        hibernateProperties.setProperty("show_sql", env.getProperty("hibernate.show_sql"));
+
+//        hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", env.getProperty("hibernate.cache.use_second_level_cache"));
+//        hibernateProperties.setProperty("hibernate.cache.use_query_cache", env.getProperty("hibernate.cache.use_query_cache"));
+//        hibernateProperties.setProperty("hibernate.globally_quoted_identifiers", "true");
         return hibernateProperties;
     }
 
     @Bean
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.user"));
-        dataSource.setPassword(env.getProperty("jdbc.pass"));
+        dataSource.setDriverClassName(this.env.getProperty("jdbc.driverClassName"));
+        dataSource.setUrl(this.env.getProperty("jdbc.url"));
+        dataSource.setUsername(this.env.getProperty("jdbc.user"));
+        dataSource.setPassword(this.env.getProperty("jdbc.pass"));
         return dataSource;
     }
 
     @Bean
+    @Autowired
     public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
         final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);

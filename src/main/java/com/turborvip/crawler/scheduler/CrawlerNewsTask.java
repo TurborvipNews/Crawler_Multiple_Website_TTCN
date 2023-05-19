@@ -4,9 +4,9 @@ import com.turborvip.crawler.models.Url;
 import com.turborvip.crawler.repositories.CategoryRepository;
 import com.turborvip.crawler.services.CategoryService;
 import com.turborvip.crawler.services.NewsService;
-import com.turborvip.crawler.utils.CrawlByDanTri;
-import com.turborvip.crawler.utils.CrawlStrategy;
-import com.turborvip.crawler.utils.Crawler;
+import com.turborvip.crawler.utils.CrawlUtil.CrawlByDanTri;
+import com.turborvip.crawler.utils.CrawlUtil.CrawlStrategy;
+import com.turborvip.crawler.utils.CrawlUtil.Crawler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -35,9 +35,9 @@ public class CrawlerNewsTask {
             if (urlList != null && !urlList.isEmpty()) {
                 for (Url url : urlList) {
                     Crawler crawler = new Crawler();
-
+                    System.out.println(category.getName() + " in " + url.getType());
                     if(url.getType().equals("dan_tri")){
-                        System.out.println("crawl dan tri strategy " + url.getPath());
+                        System.out.println("Crawl dan tri strategy " + url.getPath());
                         strategy = new CrawlByDanTri(this.newsService,url.getPath(),category.getId());
                     }
                     assert strategy != null;

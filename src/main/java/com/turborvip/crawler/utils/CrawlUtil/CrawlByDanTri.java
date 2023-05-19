@@ -1,4 +1,4 @@
-package com.turborvip.crawler.utils;
+package com.turborvip.crawler.utils.CrawlUtil;
 
 import com.turborvip.crawler.models.Category;
 import com.turborvip.crawler.models.News;
@@ -8,7 +8,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,7 +74,7 @@ public class CrawlByDanTri implements CrawlStrategy {
     public News getDataDetailPage(String url, int process) throws IOException, InterruptedException {
         News data = new News();
         try {
-            System.out.println("---" + process + "%---");
+            System.out.print("---" + process +"%");
             Thread.sleep(3000);
             Document doc = Jsoup.connect(url).timeout(5000).get();
             Element authorElement = doc.getElementsByClass("author-name").first();
@@ -93,6 +92,7 @@ public class CrawlByDanTri implements CrawlStrategy {
     @Override
     public void saveNewsInDB() throws IOException {
         ArrayList<News> listNews = this.getDataListNews(path);
+        ArrayList<News> listNewsNotExist = new ArrayList<>();
         for (News news : listNews) {
             // create category current
             Category category = new Category();
@@ -102,7 +102,16 @@ public class CrawlByDanTri implements CrawlStrategy {
             // create reference with category
             news.setLikedNews(categories);
             // create record in database
-            this.newsService.save(news);
+            News newsExist = this.newsService.findByCaptionAndUrl(news.getCaption(), news.getUrl());
+            if (newsExist == null) {
+                listNewsNotExist.add(news);
+            }
+        }
+        if (listNewsNotExist.size()>0){
+                this.newsService.saveAll(listNewsNotExist);
+            System.out.printf("\n"+" Crawl success "+ listNewsNotExist.size() +" items !" + "\n");
+        }else {
+            System.out.println("Crawl 0 items");
         }
 
 //        News news = new News();
@@ -125,7 +134,7 @@ public class CrawlByDanTri implements CrawlStrategy {
     }
 
     @Autowired
-    public CrawlByDanTri(NewsService newsService,String path, Long categoryId) {
+    public CrawlByDanTri(NewsService newsService, String path, Long categoryId) {
         this.newsService = newsService;
         this.path = path;
         this.categoryId = categoryId;

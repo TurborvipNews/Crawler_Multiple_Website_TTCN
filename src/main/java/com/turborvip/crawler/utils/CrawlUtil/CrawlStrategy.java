@@ -1,4 +1,4 @@
-package com.turborvip.crawler.utils;
+package com.turborvip.crawler.utils.CrawlUtil;
 
 import com.turborvip.crawler.models.News;
 import org.apache.hc.core5.http.ParseException;

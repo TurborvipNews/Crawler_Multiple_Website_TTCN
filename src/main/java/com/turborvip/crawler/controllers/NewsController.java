@@ -42,7 +42,7 @@ public class NewsController {
 
         news.setLikedNews(categories);
 
-        this.newsService.save(news);
+//        this.newsService.saveAll();
 
 //        List<CategoryRepository.FieldNecessaryOfCategory> categories = categoryService.getAll();
 //

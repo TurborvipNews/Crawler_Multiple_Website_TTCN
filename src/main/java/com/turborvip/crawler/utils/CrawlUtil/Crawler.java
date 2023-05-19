@@ -1,4 +1,4 @@
-package com.turborvip.crawler.utils;
+package com.turborvip.crawler.utils.CrawlUtil;
 
 import java.io.IOException;
 

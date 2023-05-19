@@ -2,27 +2,38 @@ package com.turborvip.crawler.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Cascade;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.Set;
 
 
 @Entity
 @Table(name = "news")
+@Data
+@NoArgsConstructor
+@ToString
 public class News {
-
     private static final Date TIME_NOW = new Date();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(unique = true)
     private String caption;
+
+    @NotBlank(message = "Thumbnail must not blank!")
     private String thumbnail;
 
     private String description;
 
+    @NotBlank(message = "Content must not blank!")
     private String content;
 
     private String author;
@@ -49,125 +60,4 @@ public class News {
     @JsonManagedReference
     private Set<Category> likedNews;
 
-    public News() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getView_of_day() {
-        return view_of_day;
-    }
-
-    public void setView_of_day(Long view_of_day) {
-        this.view_of_day = view_of_day;
-    }
-
-    public Long getView_of_hour() {
-        return view_of_hour;
-    }
-
-    public void setView_of_hour(Long view_of_hour) {
-        this.view_of_hour = view_of_hour;
-    }
-
-    public String getCreate_by_id() {
-        return created_by_id;
-    }
-
-    public void setCreate_by_id(String create_by_id) {
-        this.created_by_id = create_by_id;
-    }
-
-    public String getUpdate_by_id() {
-        return updated_by_id;
-    }
-
-    public void setUpdate_by_id(String update_by_id) {
-        this.updated_by_id = update_by_id;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
-
-    public void setCaption(String caption) {
-        this.caption = caption;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public Set<Category> getLikedNews() {
-        return likedNews;
-    }
-
-    public void setLikedNews(Set<Category> likedNews) {
-        this.likedNews = likedNews;
-    }
-
-    @Override
-    public String toString() {
-        return "News{" +
-                "caption='" + caption + '\'' +
-                ", thumbnail='" + thumbnail + '\'' +
-                ", description='" + description + '\'' +
-                ", content='" + content + '\'' +
-                ", author='" + author + '\'' +
-                ", view_of_day=" + view_of_day +
-                ", view_of_hour=" + view_of_hour +
-                ", url='" + url + '\'' +
-                ", status=" + status +
-                '}';
-    }
 }

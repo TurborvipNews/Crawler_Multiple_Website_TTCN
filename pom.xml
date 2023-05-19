@@ -11,7 +11,7 @@
     <groupId>com.turborvip</groupId>
     <artifactId>Crawler</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Crawler</name>
     <description>Crawler</description>
     <properties>
@@ -70,6 +70,17 @@
             <version>2.0.1.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.2.2.Final</version>
+            <type>pom</type>
+        </dependency>
 
     </dependencies>
 
