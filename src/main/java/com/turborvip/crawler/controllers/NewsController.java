@@ -26,21 +26,21 @@ public class NewsController {
 
     @GetMapping("/test/save/news")
     public void testSave() throws IOException {
-        News news = new News();
-        news.setCaption("test thoi kk");
-        Category category = new Category();
-        category.setId(1L);
-
-        Category category1 = new Category();
-        category1.setId(2L);
-
-        System.out.println(news);
-
-        Set<Category> categories = new HashSet<>();
-        categories.add(category);
-        categories.add(category1);
-
-        news.setLikedNews(categories);
+//        News news = new News();
+//        news.setCaption("test thoi kk");
+//        Category category = new Category();
+//        category.setId(1L);
+//
+//        Category category1 = new Category();
+//        category1.setId(2L);
+//
+//        System.out.println(news);
+//
+//        Set<Category> categories = new HashSet<>();
+//        categories.add(category);
+//        categories.add(category1);
+//
+//        news.setLikedNews(categories);
 
 //        this.newsService.saveAll();
 
@@ -57,6 +57,7 @@ public class NewsController {
 //            }
 //            System.out.println("-------------------------");
 //        }
+//        System.out.println(this.newsService.findById(352L).get());
 
 
     }

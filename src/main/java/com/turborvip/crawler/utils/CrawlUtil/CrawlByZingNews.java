@@ -19,27 +19,31 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CrawlByDanTri implements CrawlStrategy {
-    private  NewsService newsService;
-    private  NewsCategoriesLinksService newsCategoriesLinksService;
-    private  String path;
-    private  Optional<Category> category;
-    private  Long categoryId;
-    private static final String domain = "https://dantri.com.vn";
-    private final int limitElement = 9;
+public class CrawlByZingNews implements CrawlStrategy {
+    private NewsService newsService;
+    private NewsCategoriesLinksService newsCategoriesLinksService;
+    private String path;
+    private Optional<Category> category;
+    private Long categoryId;
+    private static final String domain = "https://zingnews.vn";
 
+    private final int limitElement = 9;
 
     @Override
     public ArrayList<News> getDataListNews(String path) {
         try {
             ArrayList<News> listNews = new ArrayList<>();
-            Document doc = Jsoup.connect(path).timeout(5000).get();
-            Element component = doc.getElementsByClass("article list").first();
 
-            if (component == null) {
+            Document doc = Jsoup.connect(path).timeout(5000).get();
+            Element componentWrapper = doc.getElementById("news-latest");
+
+            if (componentWrapper == null) {
                 System.out.println("\n Error with path " + path + "\n");
                 return null;
             }
+
+            Element component = componentWrapper.getElementsByClass("article-list").first();
+
             Elements children = component.children();
 
             // limit element you want to crawl
@@ -49,14 +53,14 @@ public class CrawlByDanTri implements CrawlStrategy {
             }
             Element[] childrenArray = new Element[elements.size()];
 
-            // convert to array for loop
+            // convert to array to loop
             elements.toArray(childrenArray);
 
             // loop to get detail content, author,... and add create all attribute to a news and add it to list news
             for (int i = 0; i < childrenArray.length; i++) {
                 News news = new News();
                 Element imgElement = childrenArray[i].getElementsByTag("img").first();
-                Element descriptionElement = childrenArray[i].getElementsByClass("article-excerpt").first();
+                Element descriptionElement = childrenArray[i].getElementsByClass("article-summary").first();
                 Element urlElement = childrenArray[i].getElementsByTag("a").first();
 
                 if (urlElement != null) {
@@ -67,7 +71,7 @@ public class CrawlByDanTri implements CrawlStrategy {
                         description = descriptionElement.text();
                     }
                     if (imgElement != null) {
-                        thumbnail = imgElement.attr("data-src");
+                        thumbnail = imgElement.attr("src");
                     }
                     int process = Math.round((float) ((i + 1) * 100) / childrenArray.length);
 
@@ -83,6 +87,7 @@ public class CrawlByDanTri implements CrawlStrategy {
             }
             return listNews;
         } catch (IOException error) {
+            System.out.println("1");
             return null;
         }
     }
@@ -95,8 +100,8 @@ public class CrawlByDanTri implements CrawlStrategy {
             p.showProgress(process);
             Thread.sleep(2000);
             Document doc = Jsoup.connect(url).timeout(20000).get();
-            Element authorElement = doc.getElementsByClass("author-name").first();
-            Element contentElement = doc.getElementsByClass("singular-content").first();
+            Element authorElement = doc.getElementsByClass("the-article-author").first();
+            Element contentElement = doc.getElementsByClass("the-article-body").first();
             String author = authorElement != null ? authorElement.text() : null;
             String content = contentElement != null ? contentElement.outerHtml() : null;
             data.setAuthor(author);
@@ -110,9 +115,11 @@ public class CrawlByDanTri implements CrawlStrategy {
 
     @Override
     public void saveNewsInDB() {
-        try {
-            ArrayList<News> listNews = this.getDataListNews(path);
-            System.out.println("\n");
+        ArrayList<News> listNews = this.getDataListNews(path);
+        if (listNews == null) {
+            System.out.print("\nCrawl 0 items\n");
+            System.out.println("\n---------------------------------------------------------------------------------\n");
+        } else {
             ArrayList<NewsCategoriesLinks> links = new ArrayList<>();
             ArrayList<NewsCategoriesLinks> linksUpdate = new ArrayList<>();
             ArrayList<News> listNewsNotExist = new ArrayList<>();
@@ -166,22 +173,20 @@ public class CrawlByDanTri implements CrawlStrategy {
             if (linksUpdate.size() > 0) {
                 this.newsService.saveAll(listNewsExist);
                 this.newsCategoriesLinksService.saveAll(linksUpdate);
-                System.out.print("\nUpdate " + linksUpdate.size() + " news\n");
+                System.out.print("\n" + "Update " + linksUpdate.size() + " news\n");
             }
-        } catch (Exception err) {
-            System.out.println(err);
         }
     }
 
     @Autowired
-    public CrawlByDanTri(NewsService newsService, CategoryService categoryService, NewsCategoriesLinksService newsCategoriesLinksService, String path, Long categoryId) {
-        try{
+    public CrawlByZingNews(NewsService newsService, CategoryService categoryService, NewsCategoriesLinksService newsCategoriesLinksService, String path, Long categoryId) {
+        try {
             this.newsService = newsService;
             this.newsCategoriesLinksService = newsCategoriesLinksService;
             this.path = path;
             this.category = categoryService.findById(categoryId);
             this.categoryId = categoryId;
-        }catch (Exception err){
+        } catch (Exception err) {
             System.out.println("Fails");
         }
 

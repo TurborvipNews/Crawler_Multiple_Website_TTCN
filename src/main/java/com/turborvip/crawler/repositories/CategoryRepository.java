@@ -20,5 +20,8 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
         ArrayList<Url> getUrl();
     }
 
-    List<FieldNecessaryOfCategory> findAllBy();
+    List<FieldNecessaryOfCategory> findByStatusTrue();
+
+
+
 }

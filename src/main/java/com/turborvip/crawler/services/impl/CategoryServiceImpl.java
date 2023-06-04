@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -14,6 +15,11 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     @Override
     public List<CategoryRepository.FieldNecessaryOfCategory> getAll() {
-        return  this.categoryRepository.findAllBy();
+        return  this.categoryRepository.findByStatusTrue();
+    }
+
+    @Override
+    public Optional<Category> findById(Long id) {
+        return this.categoryRepository.findById(id);
     }
 }

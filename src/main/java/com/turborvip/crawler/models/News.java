@@ -1,22 +1,21 @@
 package com.turborvip.crawler.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.Cascade;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
 @Table(name = "news")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@ToString
 public class News {
     private static final Date TIME_NOW = new Date();
 
@@ -29,11 +28,13 @@ public class News {
     private String caption;
 
     @NotBlank(message = "Thumbnail must not blank!")
+    @NotNull(message = "Thumbnail must not null!")
     private String thumbnail;
 
     private String description;
 
     @NotBlank(message = "Content must not blank!")
+    @NotNull(message = "Content must not null!")
     private String content;
 
     private String author;
@@ -53,11 +54,19 @@ public class News {
     private String created_by_id;
     private String updated_by_id;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = "news_categories_links",
-            joinColumns = @JoinColumn(name = "new_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    @JsonManagedReference
-    private Set<Category> likedNews;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "news", cascade = CascadeType.ALL)
+    private Set<NewsCategoriesLinks> links;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        News news = (News) o;
+        return getId() != null && Objects.equals(getId(), news.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
