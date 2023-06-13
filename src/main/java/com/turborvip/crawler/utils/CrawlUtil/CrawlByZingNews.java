@@ -59,7 +59,8 @@ public class CrawlByZingNews implements CrawlStrategy {
             // loop to get detail content, author,... and add create all attribute to a news and add it to list news
             for (int i = 0; i < childrenArray.length; i++) {
                 News news = new News();
-                Element imgElement = childrenArray[i].getElementsByTag("img").first();
+                Element imgElement = Objects.requireNonNull(childrenArray[i].getElementsByClass("article-thumbnail").first())
+                        .getElementsByTag("img").first();
                 Element descriptionElement = childrenArray[i].getElementsByClass("article-summary").first();
                 Element urlElement = childrenArray[i].getElementsByTag("a").first();
 
@@ -71,7 +72,7 @@ public class CrawlByZingNews implements CrawlStrategy {
                         description = descriptionElement.text();
                     }
                     if (imgElement != null) {
-                        thumbnail = imgElement.attr("src");
+                        thumbnail = imgElement.absUrl("data-src");
                     }
                     int process = Math.round((float) ((i + 1) * 100) / childrenArray.length);
 

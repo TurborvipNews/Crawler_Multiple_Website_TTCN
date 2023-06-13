@@ -55,10 +55,9 @@ public class CrawlerNewsTask {
                         if (strategy != null) {
                             crawler.processCrawl(strategy);
                             strategy = null;
-                        }else{
-                            System.out.println("System isn't support for "+ url.getType());
+                        } else {
+                            System.out.println("System isn't support for " + url.getType());
                         }
-
                     }
                     System.out.println("\n---------------------------------------------------------------------------------\n");
                 }

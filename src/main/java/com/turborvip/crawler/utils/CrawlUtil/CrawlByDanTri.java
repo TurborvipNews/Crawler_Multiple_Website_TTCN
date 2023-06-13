@@ -11,6 +11,7 @@ import com.turborvip.crawler.utils.ProgressUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -72,12 +73,14 @@ public class CrawlByDanTri implements CrawlStrategy {
                     int process = Math.round((float) ((i + 1) * 100) / childrenArray.length);
 
                     news = this.getDataDetailPage(link, process);
-                    news.setCaption(caption);
-                    news.setDescription(description);
-                    news.setThumbnail(thumbnail);
-                    news.setUrl(link);
+                    if (news != null){
+                        news.setCaption(caption);
+                        news.setDescription(description);
+                        news.setThumbnail(thumbnail);
+                        news.setUrl(link);
+                    }
                 }
-                if (news.getContent() != null && news.getThumbnail() != null) {
+                if (news != null && news.getThumbnail() != null) {
                     listNews.add(news);
                 }
             }
@@ -89,8 +92,8 @@ public class CrawlByDanTri implements CrawlStrategy {
 
     @Override
     public News getDataDetailPage(String url, int process) {
-        News data = new News();
         try {
+            News data = new News();
             ProgressUtil p = new ProgressUtil();
             p.showProgress(process);
             Thread.sleep(2000);
@@ -99,8 +102,20 @@ public class CrawlByDanTri implements CrawlStrategy {
             Element contentElement = doc.getElementsByClass("singular-content").first();
             String author = authorElement != null ? authorElement.text() : null;
             String content = contentElement != null ? contentElement.outerHtml() : null;
+
+            if(content == null){
+                return null;
+            }
+            Safelist safelist = Safelist.relaxed()
+                    .addTags("figure", "figcaption", "video")
+                    .addAttributes("img", "data-src" , "style")
+                    .addAttributes("img", "data-src")
+                    .addProtocols("img", "src", "http", "https", "data")
+                    .preserveRelativeLinks(false);
+            String safeContent = Jsoup.clean(content, safelist);
             data.setAuthor(author);
-            data.setContent(content);
+            data.setContent(safeContent);
+
             return data;
         } catch (IOException | InterruptedException err) {
             System.out.println("Err in getDataDetailPage , err networking wifi, wifi lag");
