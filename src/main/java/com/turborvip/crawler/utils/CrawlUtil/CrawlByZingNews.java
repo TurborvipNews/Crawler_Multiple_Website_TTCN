@@ -11,6 +11,7 @@ import com.turborvip.crawler.utils.ProgressUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -65,7 +66,7 @@ public class CrawlByZingNews implements CrawlStrategy {
                 Element urlElement = childrenArray[i].getElementsByTag("a").first();
 
                 if (urlElement != null) {
-                    String link = domain + urlElement.attr("href");
+                    String link = urlElement.attr("href");
                     String caption = childrenArray[i].text();
                     String description = null, thumbnail = null;
                     if (descriptionElement != null) {
@@ -77,18 +78,19 @@ public class CrawlByZingNews implements CrawlStrategy {
                     int process = Math.round((float) ((i + 1) * 100) / childrenArray.length);
 
                     news = this.getDataDetailPage(link, process);
-                    news.setCaption(caption);
-                    news.setDescription(description);
-                    news.setThumbnail(thumbnail);
-                    news.setUrl(link);
+                    if (news != null){
+                        news.setCaption(caption);
+                        news.setDescription(description);
+                        news.setThumbnail(thumbnail);
+                        news.setUrl(link);
+                    }
                 }
-                if (news.getContent() != null && news.getThumbnail() != null) {
+                if (news != null && news.getThumbnail() != null) {
                     listNews.add(news);
                 }
             }
             return listNews;
         } catch (IOException error) {
-            System.out.println("1");
             return null;
         }
     }
@@ -104,11 +106,24 @@ public class CrawlByZingNews implements CrawlStrategy {
             Element authorElement = doc.getElementsByClass("the-article-author").first();
             Element contentElement = doc.getElementsByClass("the-article-body").first();
             String author = authorElement != null ? authorElement.text() : null;
-            String content = contentElement != null ? contentElement.outerHtml() : null;
+            String content = contentElement != null ? contentElement.html() : null;
+            if(content == null){
+                return null;
+            }
+
+            Safelist safelist = Safelist.relaxed()
+                    .addTags("figure", "figcaption", "video")
+                    .addAttributes("img", "data-src" , "style")
+                    .addAttributes("img", "data-src")
+                    .addProtocols("img", "src", "http", "https", "data")
+                    .preserveRelativeLinks(false);
+            String safeContent = Jsoup.clean(content, safelist);
             data.setAuthor(author);
-            data.setContent(content);
+            data.setContent(safeContent);
+
             return data;
         } catch (IOException | InterruptedException err) {
+            System.out.println(err);
             System.out.println("Err in getDataDetailPage , err networking wifi, wifi lag");
             return null;
         }
