@@ -2,6 +2,7 @@ package com.turborvip.crawler.configuration;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +28,7 @@ import java.util.Properties;
 @ComponentScan({
         "com.turborvip.crawler"
 })
-@EnableJpaRepositories(basePackages = "com.turborvip.crawler.repositories")
+@EnableJpaRepositories(basePackages = "com.turborvip.crawler.application.repositories")
 public class Persistence {
     @Autowired
     private Environment env;
@@ -40,7 +41,7 @@ public class Persistence {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource());
-        entityManagerFactoryBean.setPackagesToScan(new String[]{"com.turborvip.crawler.models"});
+        entityManagerFactoryBean.setPackagesToScan(new String[]{"com.turborvip.crawler.domain.entity"});
         final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
         entityManagerFactoryBean.setJpaProperties(additionalProperties());
